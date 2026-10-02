@@ -93,3 +93,12 @@ Import `database/database.sql` into MySQL before first use. PHP must have OpenSS
 
 ## Role-based access
 Staff accounts can access Reports, Analysis & Dashboard, AI System Assistant, Health, Safety & Welfare, Legal & Compliance, and Asset & Equipment Issuance. System Administration & Security is administrator-only. Administrator dashboards include staff activity tracking for the Health, Safety & Welfare, Legal & Compliance, and Asset & Equipment Issuance modules through audit records.
+
+## HostForge deployment
+
+If HostForge reports `No eligible node is available to schedule this workload`
+and shows a node such as `Singapore Node 1` at `252/250`, this is a HostForge
+node-capacity issue. It cannot be fixed from PHP or Docker application code.
+Free node capacity, increase the HostForge node `max_containers` ceiling, or
+deploy to another node with capacity before redeploying. See
+`HOSTFORGE_DEPLOYMENT.md` for the exact remediation and scan results.
