@@ -40,7 +40,6 @@ if($_SERVER['REQUEST_METHOD']==='POST' && $action==='recover'){
                 'compliance_obligations',
                 'compliance_audits',
                 'health_records',
-                'health_safety_files',
                 'assets',
                 'asset_issuances',
                 'issuance_records',

@@ -92,20 +92,6 @@ CREATE TABLE IF NOT EXISTS health_records (
  notes TEXT,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
-CREATE TABLE IF NOT EXISTS health_safety_files (
- id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- employee_name VARCHAR(120) NOT NULL,
- requester_user_id INT UNSIGNED NULL,
- file_name VARCHAR(180) NOT NULL,
- file_type VARCHAR(120) NULL,
- storage_file_id BIGINT UNSIGNED NULL,
- action_type ENUM('Requested','Released') NOT NULL,
- request_date DATE NOT NULL,
- notes TEXT NULL,
- released_at DATETIME NULL,
- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- INDEX(employee_name), INDEX(action_type), INDEX(request_date)
-) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS compliance_obligations (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  title VARCHAR(180) NOT NULL,

@@ -7,12 +7,20 @@ if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 function current_user(): ?array { return $_SESSION['user'] ?? null; }
 
 function app_base_path(): string {
-    $path=str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'/'));
-    if(str_contains($path,'/modules/')) return preg_replace('#/modules/.*$#','',$path) ?: '';
-    if(str_contains($path,'/auth/')) return preg_replace('#/auth/.*$#','',$path) ?: '';
-    if(str_contains($path,'/includes')) return preg_replace('#/includes.*$#','',$path) ?: '';
-    if(str_contains($path,'/services')) return preg_replace('#/services.*$#','',$path) ?: '';
-    return ($path==='/' || $path==='.') ? '' : rtrim($path,'/');
+    // Keep authentication redirects on the same application base path as
+    // the shared URL helper. This supports both root and subdirectory installs.
+    $script = str_replace('\\\\','/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
+    $script = '/' . ltrim($script, '/');
+
+    foreach (['/modules/', '/auth/', '/includes/', '/services/'] as $marker) {
+        $pos = strpos($script, $marker);
+        if ($pos !== false) {
+            return rtrim(substr($script, 0, $pos), '/');
+        }
+    }
+
+    $dir = str_replace('\\\\','/', dirname($script));
+    return ($dir === '/' || $dir === '.' || $dir === '\\') ? '' : rtrim($dir, '/');
 }
 
 function require_login(): void {

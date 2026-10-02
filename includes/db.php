@@ -47,10 +47,6 @@ function db(): PDO {
         $addColumn($pdo, 'admin_notifications', 'sender_user_id', 'INT UNSIGNED NULL');
         $addIndex($pdo, 'admin_notifications', 'idx_notification_sender_user', '`sender_user_id`');
 
-        $addColumn($pdo, 'health_safety_files', 'requester_user_id', 'INT UNSIGNED NULL');
-        $addColumn($pdo, 'health_safety_files', 'storage_file_id', 'BIGINT UNSIGNED NULL');
-        $addColumn($pdo, 'health_safety_files', 'released_at', 'DATETIME NULL');
-
         $addColumn($pdo, 'compliance_obligations', 'report_name', 'VARCHAR(120) NULL');
         $addColumn($pdo, 'compliance_obligations', 'report_role', 'VARCHAR(120) NULL');
         $addColumn($pdo, 'compliance_obligations', 'contact_no', 'VARCHAR(60) NULL');
