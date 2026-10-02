@@ -414,3 +414,44 @@ function deleteArchiveItem(id,name){
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initModuleTop);else initModuleTop();
 })();
+
+/* Release-file picker: reuses Data Storage without exposing its management controls. */
+function getSelectedReleaseFiles(){
+ const box=document.getElementById('releaseStorageFileIds');
+ if(!box)return [];
+ return [...box.querySelectorAll('input[name="storage_file_ids[]"]')].map(i=>Number(i.value)).filter(Boolean);
+}
+function renderSelectedReleaseFiles(){
+ const display=document.getElementById('selectedReleaseFile'); if(!display)return;
+ const items=window.SELECTED_RELEASE_FILES||[];
+ display.innerHTML=items.length ? items.map(f=>`<div class="selected-file-chip"><span class="material-symbols-outlined">description</span><span class="selected-file-chip-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span><button type="button" onclick="removeReleaseFile(${Number(f.id)})" aria-label="Remove ${escapeHtml(f.name)}"><span class="material-symbols-outlined">close</span></button></div>`).join('') : '<div class="selected-file-note">No data/file selected.</div>';
+ const hidden=document.getElementById('releaseStorageFileIds');
+ if(hidden)hidden.innerHTML=items.map(f=>`<input type="hidden" name="storage_file_ids[]" value="${Number(f.id)}">`).join('');
+}
+function showReleaseFileStoragePicker(){
+ const root=document.getElementById('modalRoot'); if(!root)return;
+ const selected=new Set((window.SELECTED_RELEASE_FILES||[]).map(f=>Number(f.id)));
+ root.innerHTML=`<div class="gw-modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="gw-modal data-storage-modal">
+   <div class="gw-modal-head"><div><strong>Data Storage</strong><small>Choose one or more data/files to release.</small></div><button class="gw-modal-close" onclick="closeModal()" aria-label="Close">×</button></div>
+   <div class="gw-modal-body"><div id="releaseStoragePickerList" class="data-storage-list"><div class="data-storage-loading"><span class="material-symbols-outlined">progress_activity</span>Loading stored files...</div></div><div class="record-actions"><button type="button" class="gw-btn primary" onclick="closeModal()">Done</button></div></div>
+ </div></div>`;
+ fetch(`${window.APP_BASE||''}/includes/data_storage.php?action=list`,{credentials:'same-origin'}).then(r=>r.json()).then(data=>{
+   const box=document.getElementById('releaseStoragePickerList'); if(!box)return;
+   if(!data.ok || !Array.isArray(data.items) || !data.items.length){box.innerHTML='<div class="notification-empty"><span class="material-symbols-outlined">folder_off</span><strong>NO DATA/FILES STORED YET.</strong></div>';return;}
+   box.innerHTML=data.items.map(f=>{
+     const checked=selected.has(Number(f.id));
+     return `<button type="button" class="data-storage-item ${checked?'selected-storage-item':''}" onclick="toggleReleaseFileSelection(${Number(f.id)},${JSON.stringify(String(f.file_name))},${JSON.stringify(String(f.file_type||''))})"><span class="data-storage-file-icon material-symbols-outlined">${checked?'check_circle':'description'}</span><span class="data-storage-file-main"><strong>${escapeHtml(f.file_name)}</strong><small>${escapeHtml(f.source_branch||'Other Branch')} · ${escapeHtml(formatBytes(f.file_size))}</small></span><span class="material-symbols-outlined">${checked?'check':'add'}</span></button>`;
+   }).join('');
+ }).catch(()=>{const box=document.getElementById('releaseStoragePickerList');if(box)box.innerHTML='<div class="notification-empty"><span class="material-symbols-outlined">error</span><strong>UNABLE TO LOAD DATA/FILES.</strong><p>Please try again.</p></div>';});
+}
+function toggleReleaseFileSelection(id,name,type){
+ window.SELECTED_RELEASE_FILES=window.SELECTED_RELEASE_FILES||[];
+ const i=window.SELECTED_RELEASE_FILES.findIndex(f=>Number(f.id)===Number(id));
+ if(i>=0)window.SELECTED_RELEASE_FILES.splice(i,1); else window.SELECTED_RELEASE_FILES.push({id:Number(id),name:String(name),type:String(type||'')});
+ renderSelectedReleaseFiles();
+ showReleaseFileStoragePicker();
+}
+function removeReleaseFile(id){
+ window.SELECTED_RELEASE_FILES=(window.SELECTED_RELEASE_FILES||[]).filter(f=>Number(f.id)!==Number(id));
+ renderSelectedReleaseFiles();
+}

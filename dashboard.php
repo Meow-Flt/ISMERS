@@ -27,10 +27,10 @@ page_header('Reports, Analysis & Dashboard','dashboard'); show_flash(); ?>
 </section>
 
 <section class="gw-quick-actions">
-<a href="<?=e(url('/modules/health_safety/index.php'))?>">Health &amp; Safety</a>
-<a href="<?=e(url('/modules/legal_compliance/index.php'))?>">Legal &amp; Compliance</a>
-<?php if (($u['role'] ?? '') === 'Administrator'): ?><a href="<?=e(url('/modules/system_admin_security/index.php'))?>">Security</a><?php endif; ?>
-<a href="<?=e(url('/modules/asset_equipment/index.php'))?>">Assets</a>
+<a href="modules/health_safety/index.php">Health &amp; Safety</a>
+<a href="modules/legal_compliance/index.php">Legal &amp; Compliance</a>
+<?php if (($u['role'] ?? '') === 'Administrator'): ?><a href="modules/system_admin_security/index.php">Security</a><?php endif; ?>
+<a href="modules/asset_equipment/index.php">Assets</a>
 <form method="get" class="date-filter dashboard-date-filter" aria-label="Report date filter">
   <input type="date" name="date" value="<?=e($reportDate)?>" aria-label="Filter reports by date">
   <button class="gw-btn secondary" type="submit"><span class="material-symbols-outlined">filter_alt</span> Filter</button>

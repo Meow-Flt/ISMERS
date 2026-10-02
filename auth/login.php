@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= $pending ? 'Enter OTP' : 'Sign In' ?> — Great Solomon Manpower Services Inc.</title>
-<link rel="stylesheet" href="<?=e(url('/style.css'))?>">
+<link rel="stylesheet" href="../style.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet">
 </head>
 <body class="auth-body">
@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         <input type="hidden" name="action" value="resend_otp">
         <button type="submit" class="auth-link">Resend verification code</button>
       </form>
-      <a class="auth-link secondary" href="<?=e(url('/auth/logout.php'))?>">Use a different account</a>
+      <a class="auth-link secondary" href="../auth/logout.php">Use a different account</a>
       <div class="auth-security-note">
         <span class="material-symbols-outlined">schedule</span>
         The code expires in <?=OTP_EXPIRY_MINUTES?> minutes
